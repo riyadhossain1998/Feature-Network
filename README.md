@@ -3,8 +3,7 @@ A number of hip-hop artists from Spotify displayed by a network chart. The songs
 
 
 <h3>Currently...</h3> 
-  <li>
-  <i1>Setting up Flask and implementing a network graph on a webpage.</i1>
+  <p>Setting up Flask and implementing a network graph on a webpage.</p>
    
   </li>
 <p><t>1. Track list and featured artists retrieved using <a href= "https://spotipy.readthedocs.io/en/2.13.0/">spotipy</a></p>
