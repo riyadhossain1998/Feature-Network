@@ -13,6 +13,6 @@ A number of hip-hop artists from Spotify displayed by a network chart. The songs
 
 
 <ul>
-  <i>sss</i>
-  <i>sss</i>
+  <li>sss</li>
+  <li>sss</li>
  </ul>
