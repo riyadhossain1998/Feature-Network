@@ -10,3 +10,9 @@ A number of hip-hop artists from Spotify displayed by a network chart. The songs
 <p><t>2. The program can now generate single/multiple playlist data by writing to a csv file, the old process is still in place and can be made efficient. </p>
 <p><t>3. get_spotipy.py is a new script that will read the csv file of the playlist and remove duplicates.</p>
 <p><t>4. It also creates nodes and  links between different artist groups in order to display it on a webpage using Flask. </p>
+
+
+<ul>
+  <i>sss</i>
+  <i>sss</i>
+ </ul>
