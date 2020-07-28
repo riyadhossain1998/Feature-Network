@@ -60,14 +60,17 @@ def main():
         #create_csv(artist_list[num], artists_info, track_info)
 
         # After manipulating string and reading csv
-        songs = pd.read_csv('data/'+ artist_list[num] +'_tracks.csv', encoding='cp1252')
-        artists = pd.read_csv('data/ft_'+ artist_list[num] +'.csv', keep_default_na=False, encoding='cp1252') #removes nan
+        #songs = pd.read_csv('data/'+ artist_list[num] +'_tracks.csv', encoding='cp1252')
+        #artists = pd.read_csv('data/ft_'+ artist_list[num] +'.csv', keep_default_na=False, encoding='cp1252') #removes nan
 
-        tab = create_table(songs, artists)
-        tab.to_csv('data1/' + artist_list[num] + '.csv')
-        print(tab)
+        #tab = create_table(songs, artists)
+        #tab.to_csv('data1/' + artist_list[num] + '.csv')
+        #print(tab)
+
+        # Extra info retrieval 
+        
         num+=1
-
+    getExtraInfo(pl_id, spotifyObject)
 def get_pl_length(pl_uri: str) -> int:
     return spotifyObject.playlist_tracks(
         pl_uri,
@@ -76,21 +79,20 @@ def get_pl_length(pl_uri: str) -> int:
 
     )["total"]
 
-def get_songlist(pl_uri: str) -> List:
-    pl_length = get_pl_length(pl_uri)
-    songlist = []
 
+def getExtraInfo(pl_uri: str, spotifyObject: spotipy):
+    pl_length = get_pl_length(pl_uri)
+    release_date = []
+    preview_url = []
     offset = 0
     count = 0
     total = 0
     while offset != pl_length:
         # Get next batch of tracks
-        
-
         tracks = spotifyObject.playlist_tracks(
             pl_uri,
             offset=offset,
-            fields="items.track.name,total"
+            fields="items.track.name,items.track.preview_url,items.track.release_date,total"
         )
         i = 0
         limit = 100
@@ -103,13 +105,56 @@ def get_songlist(pl_uri: str) -> List:
             limit = lower_limit
         
         while i != limit:
-            songlist.append(tracks['items'][i]['track']['name'])
+            preview_url.append(tracks['items'][i]['track']['preview_url'])
+            release_date.append(tracks['items'][i]['release_date'])
             i+=1
         
         #print(count,tracks['items'])
         offset += len(tracks['items'])
         count +=1
+    
+    a4 = pd.DataFrame(release_date, columns=["Release Date"])
+    a5 = pd.DataFrame(preview_url, columns=["Preview URL"])
+    extra = [a4,a5]
+    print(extra)
+    return extra
+
+def get_songlist(pl_uri: str) -> List:
+    pl_length = get_pl_length(pl_uri)
+    songlist = []
+    offset = 0
+    count = 0
+    total = 0
+    while offset != pl_length:
+        # Get next batch of tracks
         
+
+        tracks = spotifyObject.playlist_tracks(
+            pl_uri,
+            offset=offset,
+            fields="items.track.name,items.track.preview_url,items.track.release_date,total"
+        )
+        i = 0
+        limit = 100
+        lower_limit = int(tracks['total'])
+        while lower_limit > 100:
+            lower_limit -= 100 
+        exit_limit = tracks['total'] - lower_limit
+        #print(lower_limit)
+        if count*100 == exit_limit:
+            limit = lower_limit
+        
+        while i != limit:
+
+            songlist.append(tracks['items'][i]['track']['name'])
+            preview_url.append(tracks['items'][i]['track']['preview_url'])
+            release_date.append(tracks['items'][i]['release_date'])
+            i+=1
+        
+        #print(count,tracks['items'])
+        offset += len(tracks['items'])
+        count +=1
+    
     return songlist
     
 def get_artists(pl_uri: str) -> List[List[Dict]]:
@@ -186,9 +231,9 @@ def create_table(songs: List, artists: List):
         featuring.append(temp_track) 
         j+=1
     
-    t = 0
+    t = len(songs)
     test = 0
-    while t < len(songs):
+    while t  < len(songs):
     #print(artist_track[t],"-",songs['Track'][t], featuring[t])
         if not featuring[t] and artist_track[t] == 'Eminem':
             #print("Solo:",songs['Track'][t]) # solos
@@ -201,10 +246,11 @@ def create_table(songs: List, artists: List):
             test+=1
         t+=1
 
-    print(test,t)
+    #print(test,t)
     a1 = pd.DataFrame(artist_track, columns=['Artist'])
     a2 = pd.DataFrame(featuring)
     a3 = pd.DataFrame(songs, columns=['Track'])
+
 
     frames=[a1,a3,a2]
     result = pd.concat(frames,axis=1,join='outer')
