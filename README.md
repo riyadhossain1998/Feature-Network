@@ -17,5 +17,9 @@ A number of hip-hop artists from Spotify displayed by a network chart. The songs
   <li> Get artist image to display as node. </li>
   <li> Pass the data from python script as a variable or create a json file with graph data and read it in javascript to render on the website. </li>
   <li> Get song release date data using the spotipy. </li> 
+  <li> Some of the artists were part of a music group or band (i.e Lil Wayne,Drake in Young Money), needs to be classified accordingly as such.</li>
+  <t><li></li> If artist == music group then add links from each artist of the group to the artists.
  </ul>
+
+
 
